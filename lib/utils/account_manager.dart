@@ -7,8 +7,8 @@ class AccountManager with ChangeNotifier {
   late Account account;
   bool showValues = false;
 
-  updateShowValues() {
-    showValues = !showValues;
+  updateShowValues({bool? value}) {
+    showValues = value ?? !showValues;
 
     notifyListeners();
   }

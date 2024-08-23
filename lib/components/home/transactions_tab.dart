@@ -1,4 +1,5 @@
-import 'package:finances/components/home/transaction_line.dart';
+import 'package:finances/components/global/transaction_line.dart';
+import 'package:finances/components/home/transaction_bottom_modal.dart';
 import 'package:finances/controllers/home_controller.dart';
 import 'package:finances/models/transactions.dart';
 import 'package:finances/utils/account_manager.dart';
@@ -72,7 +73,7 @@ class _TransactionsTabWidgetState extends State<TransactionsTabWidget> {
                     ],
                   ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Container(
             constraints: const BoxConstraints(
               minWidth: double.infinity,
@@ -115,7 +116,7 @@ class _TransactionsTabWidgetState extends State<TransactionsTabWidget> {
                 const Spacer(),
                 Row(
                   children: [
-                    for (var obj in provListenFalse.totalByCategory(activeTransactions)) ...[
+                    for (var obj in provListenTrue.totalByCategory) ...[
                       Expanded(
                         flex: (obj.value / totalSpent * 100).round(),
                         child: Container(
@@ -133,30 +134,16 @@ class _TransactionsTabWidgetState extends State<TransactionsTabWidget> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.createTransaction).then(
-                  (value) => Provider.of<HomeController>(context, listen: false).getTransactions());
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              minimumSize: const Size(double.infinity, 40),
-              elevation: 0,
-            ),
-            child: Icon(
-              Icons.add,
-              color: Theme.of(context).focusColor,
-            ),
-          ),
           const SizedBox(height: 20),
-          Text(
-            AppLocale.transactions.getString(context),
-            style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-          ),
-          const SizedBox(height: 10),
+          if (activeTransactions.isNotEmpty) ...[
+            Text(
+              AppLocale.transactions.getString(context),
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+            ),
+            const SizedBox(height: 10),
+          ],
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -175,9 +162,18 @@ class _TransactionsTabWidgetState extends State<TransactionsTabWidget> {
                       padding: const EdgeInsets.only(bottom: 10),
                       child: TransactionLineWidget(
                         transaction: transaction,
-                        onLongPress: () => provListenFalse.getTransactions(),
+                        onLongPress: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => TransactionBottomModal(
+                              transactions: transaction,
+                              onAction: () => provListenFalse.getTransactions(),
+                            ),
+                          );
+                        },
                       ),
-                    )
+                    ),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),

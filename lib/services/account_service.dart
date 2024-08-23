@@ -38,6 +38,18 @@ class AccountService {
     }
   }
 
+  Future updateName(String name) async {
+    var account = await getAccount();
+
+    if (account == null) return;
+
+    if (account.owner != name) {
+      account.owner = name;
+
+      createOrUpdateAccount(account);
+    }
+  }
+
   Future createOrUpdateAccount(Account account) async {
     if ((await getAccount()) == null) {
       await getIt<DatabaseController>().database.insert(table, account.toMap());

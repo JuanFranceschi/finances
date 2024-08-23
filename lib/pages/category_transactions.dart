@@ -1,6 +1,6 @@
 import 'package:finances/components/back_header.dart';
 import 'package:finances/components/home/category_card.dart';
-import 'package:finances/components/home/transaction_line.dart';
+import 'package:finances/components/global/transaction_line.dart';
 import 'package:finances/models/category.dart';
 import 'package:finances/models/transactions.dart';
 import 'package:finances/services/transactions_service.dart';
@@ -46,10 +46,17 @@ class _CategoryTransactionsPageState extends State<CategoryTransactionsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CategoryCardWidget(category: widget.category, totalCategories: _transactions),
+              CategoryCardWidget(
+                category: widget.category,
+                totalSpent: _transactions.fold(
+                    0.0, (previousValue, element) => previousValue += element.value),
+              ),
               const SizedBox(height: 20),
               for (var transaction in _transactions)
-                TransactionLineWidget(transaction: transaction, onLongPress: () {}),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: TransactionLineWidget(transaction: transaction, onLongPress: () {}),
+                ),
             ],
           ),
         ),

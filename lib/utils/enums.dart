@@ -1,3 +1,3 @@
-enum Period { today, weekly, monthly, custom }
+enum Period { weekly, monthly, custom }
 
 enum TransactionType { expenses, income }

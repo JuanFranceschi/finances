@@ -8,18 +8,21 @@ import 'package:provider/provider.dart';
 
 class TransactionLineWidget extends StatelessWidget {
   final Transactions transaction;
-  final Function() onLongPress;
+  final Function()? onLongPress, onTap;
 
-  const TransactionLineWidget({super.key, required this.transaction, required this.onLongPress});
+  const TransactionLineWidget(
+      {super.key, required this.transaction, this.onLongPress, this.onTap});
 
   String get valueText =>
-      (transaction.category.transactionType == TransactionType.expenses ? '-' : '+') +
+      (transaction.category.transactionType == TransactionType.expenses
+          ? '-'
+          : '+') +
       transaction.value.toStringAsFixed(2).replaceAll('.00', '');
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       onLongPress: onLongPress,
       customBorder: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
@@ -32,14 +35,15 @@ class TransactionLineWidget extends StatelessWidget {
               height: 50,
               width: 50,
               decoration: BoxDecoration(
-                color: transaction.category.color,
+                // color: transaction.category.color,
+                border: Border.all(color: transaction.category.color),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Icon(
                   transaction.category.icon,
                   size: 25,
-                  color: Colors.white,
+                  // color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -51,10 +55,14 @@ class TransactionLineWidget extends StatelessWidget {
                 children: [
                   Text(
                     transaction.title,
-                    style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 16),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge!
+                        .copyWith(fontSize: 16),
                   ),
                   Text(
-                    getIt<AppUtils>().shortDateTime(transaction.dateTime, context),
+                    getIt<AppUtils>()
+                        .shortDateTime(transaction.dateTime, context),
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
@@ -71,6 +79,9 @@ class TransactionLineWidget extends StatelessWidget {
                         valueText,
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                               fontSize: 16,
+                              color: transaction.type == TransactionType.income
+                                  ? Colors.green
+                                  : null,
                             ),
                         maxLines: 1,
                       ),

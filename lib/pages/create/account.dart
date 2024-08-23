@@ -2,6 +2,7 @@ import 'package:finances/models/account.dart';
 import 'package:finances/services/account_service.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/get_it.dart';
+import 'package:finances/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
@@ -68,7 +69,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   await getIt<AccountService>().createOrUpdateAccount(account);
 
                   if (context.mounted) {
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, AppRoutes.onboarding).then((value) {
+                      Navigator.pop(context);
+                    });
                   }
                 },
                 style: ElevatedButton.styleFrom(

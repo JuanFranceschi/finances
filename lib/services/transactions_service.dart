@@ -17,7 +17,8 @@ class TransactionsService {
     }
   }
 
-  Future<List<Transactions>> listTransactions({int limit = 10, int offset = 0}) async {
+  Future<List<Transactions>> listTransactions(
+      {int limit = 10, int offset = 0}) async {
     var resp = await getIt<DatabaseController>().database.rawQuery("""
       SELECT 
         transactions.id AS idTransaction,
@@ -77,6 +78,7 @@ class TransactionsService {
             BETWEEN DATETIME('${begin.toIso8601String()}') 
             AND DATETIME('${end.toIso8601String()}')
           $categoryWhere
+      ORDER BY transactions.dateTime DESC;
           ;
     """);
 
@@ -93,15 +95,36 @@ class TransactionsService {
         );
 
     if (context.mounted) {
-      await getIt<AccountService>().addRemoveValue(_calculateRevenue(transactions), context);
+      await getIt<AccountService>()
+          .addRemoveValue(_calculateRevenue(transactions), context);
     }
   }
 
   Future<Transactions> getTransaction(String id) async {
-    var transaction =
-        await getIt<DatabaseController>().database.query(table, where: 'id = ?', whereArgs: [id]);
+    var resp = await getIt<DatabaseController>().database.rawQuery("""
+      SELECT 
+        transactions.id AS idTransaction,
+        transactions.title,
+        transactions.description,
+        transactions.dateTime,
+        transactions.value,
+        transactions.type,
+        category.id AS idCategory,
+        category.name,
+        category.color,
+        category.icon,
+        category.plannedOutlay,
+        category.transactionType
+      FROM 
+          transactions
+      JOIN 
+          category ON transactions.categoryId = category.id
+      where 
+          idTransaction = '$id'
+          ;
+    """);
 
-    return Transactions.fromMap(transaction.first);
+    return Transactions.fromMap(resp.first);
   }
 
   Future updateTransactions(
@@ -136,7 +159,8 @@ class TransactionsService {
     );
 
     if (context.mounted) {
-      await getIt<AccountService>().addRemoveValue(_calculateRevenue(transaction) * -1, context);
+      await getIt<AccountService>()
+          .addRemoveValue(_calculateRevenue(transaction) * -1, context);
     }
   }
 }

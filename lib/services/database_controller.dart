@@ -5,6 +5,7 @@ import 'package:finances/services/category_service.dart';
 import 'package:finances/utils/enums.dart';
 import 'package:finances/utils/get_it.dart';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
@@ -66,7 +67,7 @@ class DatabaseController {
       id: uuid.v4(),
       name: pt ? 'Mercado' : 'Groceries',
       color: const Color(0xff36B5B0),
-      icon: Icons.local_grocery_store,
+      icon: Symbols.shopping_cart,
       plannedOutlay: 1200,
       transactionType: TransactionType.expenses,
     );
@@ -77,7 +78,7 @@ class DatabaseController {
       id: uuid.v4(),
       name: pt ? 'Saúde' : 'Health',
       color: const Color(0xffE63946),
-      icon: Icons.local_hospital,
+      icon: Symbols.healing_rounded,
       plannedOutlay: 400,
       transactionType: TransactionType.expenses,
     );
@@ -88,7 +89,7 @@ class DatabaseController {
       id: uuid.v4(),
       name: pt ? 'Transporte' : 'Transportation',
       color: const Color(0xffFB5607),
-      icon: Icons.local_gas_station,
+      icon: Symbols.local_gas_station,
       plannedOutlay: 500,
       transactionType: TransactionType.expenses,
     );
@@ -99,7 +100,7 @@ class DatabaseController {
       id: uuid.v4(),
       name: pt ? 'Salário' : 'Paycheck',
       color: const Color(0xff4E89AE),
-      icon: Icons.business,
+      icon: Symbols.business_center,
       plannedOutlay: 0,
       transactionType: TransactionType.income,
     );

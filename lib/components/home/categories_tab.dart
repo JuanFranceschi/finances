@@ -1,7 +1,9 @@
 import 'package:finances/components/global/custom_switch.dart';
+import 'package:finances/components/home/category_bottom_modal.dart';
 import 'package:finances/components/home/category_card.dart';
 import 'package:finances/controllers/home_controller.dart';
 import 'package:finances/models/category.dart';
+import 'package:finances/models/transactions.dart';
 import 'package:finances/services/category_service.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/enums.dart';
@@ -9,6 +11,7 @@ import 'package:finances/utils/get_it.dart';
 import 'package:finances/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesTabWidget extends StatefulWidget {
@@ -23,7 +26,11 @@ class _CategoriesTabWidgetState extends State<CategoriesTabWidget> {
   HomeController get provListenTrue => Provider.of(context);
 
   var _type = TransactionType.expenses;
-  Future<List<Category>> _categoriesBuilder = getIt<CategoryService>().listCategories();
+  Future<List<Category>> _categoriesBuilder =
+      getIt<CategoryService>().listCategories();
+  List<Transactions> get totalCategories => _type == TransactionType.income
+      ? provListenTrue.totalByCategoryIncome
+      : provListenTrue.totalByCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +48,19 @@ class _CategoriesTabWidgetState extends State<CategoriesTabWidget> {
             onTap: (value) {
               setState(() {
                 _type = value as TransactionType;
-                _categoriesBuilder = getIt<CategoryService>().listCategories(type: _type);
+                _categoriesBuilder =
+                    getIt<CategoryService>().listCategories(type: _type);
               });
             },
           ),
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.createCategory).then((value) {
+              Navigator.pushNamed(context, AppRoutes.createCategory)
+                  .then((value) {
                 setState(() {
-                  _categoriesBuilder = getIt<CategoryService>().listCategories(type: _type);
+                  _categoriesBuilder =
+                      getIt<CategoryService>().listCategories(type: _type);
                 });
               });
             },
@@ -60,7 +70,7 @@ class _CategoriesTabWidgetState extends State<CategoriesTabWidget> {
               elevation: 0,
             ),
             child: Icon(
-              Icons.add,
+              Symbols.add,
               color: Theme.of(context).focusColor,
             ),
           ),
@@ -80,25 +90,60 @@ class _CategoriesTabWidgetState extends State<CategoriesTabWidget> {
                 future: _categoriesBuilder,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    var totalCategories =
-                        provListenFalse.totalByCategory(provListenTrue.activeTransactions);
+                    snapshot.data!.sort((a, b) {
+                      double aValue = 0;
+                      double bValue = 0;
+
+                      bool whereA(Transactions obj) => obj.category.id == a.id;
+
+                      bool whereB(Transactions obj) => obj.category.id == b.id;
+
+                      if (totalCategories.any(whereA)) {
+                        aValue = totalCategories.firstWhere(whereA).value;
+                      }
+
+                      if (totalCategories.any(whereB)) {
+                        bValue = totalCategories.firstWhere(whereB).value;
+                      }
+
+                      return bValue.compareTo(aValue);
+                    });
+
                     return SingleChildScrollView(
                       child: Column(
                         children: [
                           for (Category category in snapshot.data!) ...[
-                            InkWell(
+                            CategoryCardWidget(
+                              category: category,
                               onTap: () => Navigator.pushNamed(
                                 context,
                                 AppRoutes.categoryTransactions,
                                 arguments: category,
                               ),
-                              customBorder: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: CategoryCardWidget(
-                                category: category,
-                                totalCategories: totalCategories,
-                              ),
+                              onLongPress: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => CategoryBottomModal(
+                                    category: category,
+                                    onAction: () {
+                                      provListenFalse.getTransactions();
+                                      setState(() {
+                                        _categoriesBuilder =
+                                            getIt<CategoryService>()
+                                                .listCategories(type: _type);
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
+                              totalSpent: totalCategories.any(
+                                      (obj) => obj.category.id == category.id)
+                                  ? totalCategories
+                                      .where((obj) =>
+                                          obj.category.id == category.id)
+                                      .first
+                                      .value
+                                  : 0,
                             ),
                             const SizedBox(height: 10),
                           ],

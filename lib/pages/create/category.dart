@@ -9,11 +9,13 @@ import 'package:finances/utils/enums.dart';
 import 'package:finances/utils/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateCategory extends StatefulWidget {
   final TransactionType? type;
-  const CreateCategory({super.key, this.type});
+  final Category? category;
+  const CreateCategory({super.key, this.type, this.category});
 
   @override
   State<CreateCategory> createState() => _CreateCategoryState();
@@ -28,24 +30,24 @@ class _CreateCategoryState extends State<CreateCategory> {
   TransactionType _type = TransactionType.expenses;
 
   final List<IconData> _icons = List.unmodifiable([
-    Icons.shopping_cart,
-    Icons.local_hospital,
-    Icons.shopping_bag,
-    Icons.fastfood,
-    Icons.local_grocery_store,
-    Icons.local_gas_station,
-    Icons.school,
-    Icons.house,
-    Icons.flight,
-    Icons.local_offer,
-    Icons.directions_car,
-    Icons.movie,
-    Icons.phone_android,
-    Icons.pets,
-    Icons.fitness_center,
-    Icons.gamepad,
-    Icons.paid_sharp,
-    Icons.business_center,
+    Symbols.shopping_cart,
+    Symbols.local_hospital,
+    Symbols.shopping_bag,
+    Symbols.fastfood,
+    Symbols.healing_rounded,
+    Symbols.local_gas_station,
+    Symbols.school,
+    Symbols.house,
+    Symbols.flight,
+    Symbols.local_offer,
+    Symbols.directions_car,
+    Symbols.movie,
+    Symbols.phone_android,
+    Symbols.pet_supplies_rounded,
+    Symbols.fitness_center,
+    Symbols.gamepad,
+    Symbols.paid_sharp,
+    Symbols.business_center,
   ]);
 
   final List<Color> _colors = List.unmodifiable([
@@ -78,6 +80,15 @@ class _CreateCategoryState extends State<CreateCategory> {
   @override
   void initState() {
     _type = widget.type ?? TransactionType.expenses;
+
+    if (widget.category != null) {
+      _titleEditingController.text = widget.category!.name;
+      _valueEditingController.text = mask.formatDouble(widget.category!.plannedOutlay);
+      _color = widget.category!.color;
+      _icon = widget.category!.icon;
+      _type = widget.category!.transactionType;
+    }
+
     super.initState();
   }
 
@@ -144,9 +155,6 @@ class _CreateCategoryState extends State<CreateCategory> {
                         TextField(
                           controller: _valueEditingController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            prefix: Text(' \$ '),
-                          ),
                           inputFormatters: [mask],
                         ),
                       ],
@@ -184,7 +192,7 @@ class _CreateCategoryState extends State<CreateCategory> {
                                     width: (MediaQuery.of(context).size.width - 110) / 6,
                                     height: (MediaQuery.of(context).size.width - 110) / 6,
                                     decoration: BoxDecoration(
-                                      color: _icon == icon
+                                      color: _icon?.codePoint == icon.codePoint
                                           ? Theme.of(context).focusColor
                                           : Theme.of(context).colorScheme.tertiary,
                                       shape: BoxShape.circle,
@@ -235,7 +243,7 @@ class _CreateCategoryState extends State<CreateCategory> {
                                       ),
                                       child: _color == color
                                           ? Icon(
-                                              Icons.check,
+                                              Symbols.check,
                                               color: Theme.of(context).colorScheme.primaryContainer,
                                             )
                                           : null,
@@ -258,16 +266,27 @@ class _CreateCategoryState extends State<CreateCategory> {
                   right: 100,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await getIt<CategoryService>().insertCategory(
-                        Category(
-                          id: const Uuid().v4(),
+                      if (widget.category != null) {
+                        await getIt<CategoryService>().updateCategory(Category(
+                          id: widget.category!.id,
                           icon: _icon!,
                           color: _color!,
                           name: _titleEditingController.text,
                           transactionType: _type,
                           plannedOutlay: mask.getDouble(),
-                        ),
-                      );
+                        ));
+                      } else {
+                        await getIt<CategoryService>().insertCategory(
+                          Category(
+                            id: const Uuid().v4(),
+                            icon: _icon!,
+                            color: _color!,
+                            name: _titleEditingController.text,
+                            transactionType: _type,
+                            plannedOutlay: mask.getDouble(),
+                          ),
+                        );
+                      }
 
                       if (context.mounted) Navigator.pop(context);
                     },

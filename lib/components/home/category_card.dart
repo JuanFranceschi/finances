@@ -1,5 +1,4 @@
 import 'package:finances/models/category.dart';
-import 'package:finances/models/transactions.dart';
 import 'package:finances/utils/account_manager.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/app_utils.dart';
@@ -13,100 +12,118 @@ class CategoryCardWidget extends StatelessWidget {
   const CategoryCardWidget({
     super.key,
     required this.category,
-    required this.totalCategories,
+    required this.totalSpent,
+    this.onTap,
+    this.onLongPress,
   });
 
   final Category category;
-  final List<Transactions> totalCategories;
+  final double totalSpent;
+  final Function()? onTap, onLongPress;
 
-  double get totalSpent => totalCategories.any((obj) => obj.category.id == category.id)
-      ? totalCategories.firstWhere((obj) => obj.category.id == category.id).value
-      : 0;
+  double get percentageSpent {
+    if (category.plannedOutlay > 0) {
+      return totalSpent / category.plannedOutlay;
+    }
 
-  double get percentageSpent => totalSpent > 0
-      ? totalCategories.firstWhere((obj) => obj.category.id == category.id).value /
-          totalCategories.firstWhere((obj) => obj.category.id == category.id).category.plannedOutlay
-      : 0;
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
-      child: Container(
-        height: 100,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
+      child: InkWell(
+        onTap: onTap,
+        onLongPress: onLongPress,
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
-        child: Row(
-          children: [
-            Container(
-              height: 120,
-              width: 10,
-              color: category.color,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          category.icon,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            category.name,
-                            style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 18),
+        child: Ink(
+          height: 100,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 120,
+                width: 10,
+                color: category.color,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            category.icon,
+                            size: 18,
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '${AppLocale.estimate.getString(context)}: ${Provider.of<AccountManager>(context).showValues ? getIt<AppUtils>().moneyToString(category.plannedOutlay) : '-'}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.tertiary),
-                    ),
-                    Text(
-                      '${category.transactionType == TransactionType.expenses ? AppLocale.totalSpent.getString(context) : AppLocale.totalGain.getString(context)}: ${Provider.of<AccountManager>(context).showValues ? getIt<AppUtils>().moneyToString(totalSpent) : '-'}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium!
-                          .copyWith(color: Theme.of(context).colorScheme.tertiary),
-                    ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: LinearProgressIndicator(
-                            minHeight: 10,
-                            value: percentageSpent,
-                            borderRadius: BorderRadius.circular(5),
-                            backgroundColor: Colors.black12,
-                            color: category.color,
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              category.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .copyWith(fontSize: 18),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Center(
-                            child: Text(Provider.of<AccountManager>(context).showValues
-                                ? '${(percentageSpent * 100).toInt()}%'
-                                : ''),
+                        ],
+                      ),
+                      Text(
+                        '${AppLocale.estimate.getString(context)}: ${Provider.of<AccountManager>(context).showValues ? getIt<AppUtils>().moneyToString(category.plannedOutlay) : '-'}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.tertiary),
+                      ),
+                      Text(
+                        '${category.transactionType == TransactionType.expenses ? AppLocale.totalSpent.getString(context) : AppLocale.totalGain.getString(context)}: ${Provider.of<AccountManager>(context).showValues ? getIt<AppUtils>().moneyToString(totalSpent) : '-'}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.tertiary),
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: LinearProgressIndicator(
+                                minHeight: 10,
+                                value: percentageSpent,
+                                backgroundColor: Colors.black12,
+                                borderRadius: BorderRadius.circular(5),
+                                color: category.color,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          SizedBox(
+                            width: 100,
+                            child: Center(
+                              child: Text(Provider.of<AccountManager>(context)
+                                      .showValues
+                                  ? '${(percentageSpent * 100).toInt()}%'
+                                  : ''),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

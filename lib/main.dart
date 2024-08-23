@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:finances/models/category.dart';
+import 'package:finances/models/transactions.dart';
 import 'package:finances/pages/category_transactions.dart';
 import 'package:finances/pages/create/category.dart';
+import 'package:finances/pages/create/transaction.dart';
 import 'package:finances/services/account_service.dart';
 import 'package:finances/services/database_controller.dart';
+import 'package:finances/services/preferences_service.dart';
 import 'package:finances/utils/account_manager.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/enums.dart';
@@ -58,13 +61,19 @@ class _MainAppState extends State<MainApp> {
 
   @override
   void initState() {
+    var languageCode = Platform.localeName;
+    if (languageCode.toLowerCase().contains('pt')) {
+      languageCode = 'pt';
+    } else {
+      languageCode = 'en';
+    }
+
     localization.init(
       mapLocales: [
         const MapLocale('en', AppLocale.en),
         const MapLocale('pt', AppLocale.pt),
       ],
-      initLanguageCode:
-          ['en', 'pt'].any((obj) => Platform.localeName.contains(obj)) ? Platform.localeName : 'en',
+      initLanguageCode: languageCode,
     );
     localization.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
@@ -85,22 +94,39 @@ class _MainAppState extends State<MainApp> {
       darkTheme: darkTheme,
       themeMode: Provider.of<ThemeManager>(context).themeMode,
       onGenerateRoute: (RouteSettings settings) {
-        if (settings.name == AppRoutes.createCategory) {
-          return MaterialPageRoute(
-            builder: (BuildContext context) => CreateCategory(
-              type: settings.arguments as TransactionType?,
-            ),
-            settings: settings,
-          );
-        } else if (settings.name == AppRoutes.categoryTransactions) {
-          return MaterialPageRoute(
-            builder: (BuildContext context) => CategoryTransactionsPage(
-              category: settings.arguments as Category,
-            ),
-            settings: settings,
-          );
+        switch (settings.name) {
+          case AppRoutes.createCategory:
+            return MaterialPageRoute(
+              builder: (BuildContext context) {
+                if (settings.arguments is TransactionType) {
+                  return CreateCategory(
+                    type: settings.arguments as TransactionType,
+                  );
+                } else {
+                  return CreateCategory(
+                    category: settings.arguments as Category?,
+                  );
+                }
+              },
+              settings: settings,
+            );
+          case AppRoutes.categoryTransactions:
+            return MaterialPageRoute(
+              builder: (BuildContext context) => CategoryTransactionsPage(
+                category: settings.arguments as Category,
+              ),
+              settings: settings,
+            );
+          case AppRoutes.createTransaction:
+            return MaterialPageRoute(
+              builder: (BuildContext context) => CreateTransaction(
+                transaction: settings.arguments as Transactions?,
+              ),
+              settings: settings,
+            );
+          default:
+            return null;
         }
-        return null;
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:finances/models/transactions.dart';
+import 'package:finances/services/preferences_service.dart';
 import 'package:finances/services/transactions_service.dart';
 import 'package:finances/utils/account_manager.dart';
 import 'package:finances/utils/app_utils.dart';
@@ -10,8 +11,30 @@ import 'package:provider/provider.dart';
 
 class HomeController with ChangeNotifier {
   final BuildContext context;
-  Period period = Period.weekly;
+  Period period = getIt<PreferencesService>().getDefaultPeriod;
   DateTime customBegin = DateTime.now(), customEnd = DateTime.now();
+
+  DateTime get begin {
+    switch (period) {
+      case Period.weekly:
+        return getIt<AppUtils>().getDateRange(Period.weekly, _today)[0];
+      case Period.monthly:
+        return getIt<AppUtils>().getDateRange(Period.monthly, _today)[0];
+      case Period.custom:
+        return customBegin;
+    }
+  }
+
+  DateTime get end {
+    switch (period) {
+      case Period.weekly:
+        return getIt<AppUtils>().getDateRange(Period.weekly, _today)[1];
+      case Period.monthly:
+        return getIt<AppUtils>().getDateRange(Period.monthly, _today)[1];
+      case Period.custom:
+        return customEnd;
+    }
+  }
 
   HomeController({required this.context});
 
@@ -20,13 +43,6 @@ class HomeController with ChangeNotifier {
 
     return _monthlyTransactions.where((obj) {
       return obj.dateTime.isAfter(dates[0]) && obj.dateTime.isBefore(dates[1]);
-    }).toList();
-  }
-
-  List<Transactions> get _todayTransactions {
-    return _monthlyTransactions.where((obj) {
-      return obj.dateTime.isAfter(_today) &&
-          obj.dateTime.isBefore(_today.add(const Duration(days: 1)));
     }).toList();
   }
 
@@ -39,8 +55,6 @@ class HomeController with ChangeNotifier {
 
   List<Transactions> get activeTransactions {
     switch (period) {
-      case Period.today:
-        return _todayTransactions;
       case Period.weekly:
         return _weeklyTransactions;
       case Period.monthly:
@@ -52,10 +66,36 @@ class HomeController with ChangeNotifier {
 
   final List<Transactions> _monthlyTransactions = List.empty(growable: true);
 
-  List<Transactions> totalByCategory(List<Transactions> transactions) {
+  List<Transactions> get totalByCategory {
     List<Transactions> result = List.empty(growable: true);
 
-    for (var transaction in transactions.where((obj) => obj.type == TransactionType.expenses)) {
+    for (var transaction
+        in activeTransactions.where((obj) => obj.type == TransactionType.expenses)) {
+      bool filter(Transactions obj) => obj.category.id == transaction.category.id;
+      if (result.any(filter)) {
+        result.firstWhere(filter).value += transaction.value;
+      } else {
+        result.add(
+          Transactions(
+            id: 'any',
+            category: transaction.category,
+            dateTime: transaction.dateTime,
+            title: transaction.title,
+            description: transaction.description,
+            value: transaction.value,
+            type: transaction.category.transactionType,
+          ),
+        );
+      }
+    }
+
+    return result;
+  }
+
+  List<Transactions> get totalByCategoryIncome {
+    List<Transactions> result = List.empty(growable: true);
+
+    for (var transaction in activeTransactions.where((obj) => obj.type == TransactionType.income)) {
       bool filter(Transactions obj) => obj.category.id == transaction.category.id;
       if (result.any(filter)) {
         result.firstWhere(filter).value += transaction.value;

@@ -33,10 +33,27 @@ mixin AppLocale {
       name = 'name',
       icon = 'icon',
       color = 'color',
+      edit = 'edit',
+      delete = 'delete',
       transactions = 'transactions',
       expenseCategories = 'expenseCategories',
       incomeCategories = 'incomCategories',
-      earningsEstimate = 'earningsEstimate';
+      earningsEstimate = 'earningsEstimate',
+      categoriesCount = 'categoriesCount',
+      totalTransactions = 'totalTransactions',
+      mostProfitableCategory = 'mostProfitableCategory',
+      mostSpentCategory = 'mostSpentCategory',
+      defaultPeriod = 'defaultPeriod',
+      defaultVisibility = 'defaultVisibility',
+      visible = 'visible',
+      notVisible = 'notVisible',
+      onboardingTransactions = 'onboardingTransactions',
+      onboardingCategories = 'onboardingCategories',
+      onboardinReports = 'onboardingReports',
+      onboardingTransactionsTitle = 'onboardingTransactionsTitle',
+      onboardingCategoriesTitle = 'onboardingCategoriesTitle',
+      onboardinReportsTitle = 'onboardingReportsTitle',
+      ready = 'ready';
 
   static const Map<String, dynamic> en = {
     income: 'Income',
@@ -75,9 +92,29 @@ mixin AppLocale {
     value: 'Value',
     date: 'Date',
     save: 'Save',
+    ready: 'Start',
     transactions: 'Transactions',
     expenseCategories: 'Expenses Categories',
     incomeCategories: 'Income Categories',
+    edit: 'Edit',
+    delete: 'Delete',
+    totalTransactions: 'Transactions Count',
+    categoriesCount: 'Categories Used',
+    mostSpentCategory: 'Most Spent Category',
+    mostProfitableCategory: 'Most profitable category',
+    defaultPeriod: 'Default Period',
+    defaultVisibility: 'Default Visibility',
+    visible: 'Visible',
+    notVisible: 'Not Visible',
+    onboardingTransactions:
+        'Keep full control of your finances by recording all your transactions. Note each inflow and outflow of money, ensuring nothing goes unnoticed. With everything well documented, you will have a clear and organized view of your finances.',
+    onboardingCategories:
+        'Classify your transactions into different categories, such as food, transportation, leisure, and more. This way, you will know exactly where you are spending the most and can identify opportunities for savings. Good organization is the first step to efficient financial management.',
+    onboardinReports:
+        'Track your expenses intelligently with our detailed financial reports. View charts and summaries that show where your money is being used. With this information, you can make more informed decisions and improve your financial health.',
+    onboardingTransactionsTitle: 'Record Your Transactions',
+    onboardingCategoriesTitle: 'Organize by Category',
+    onboardinReportsTitle: 'Financial Reports',
   };
 
   static const Map<String, dynamic> pt = {
@@ -92,6 +129,7 @@ mixin AppLocale {
     expense: 'Despesa',
     totalBalance: 'Saldo Total',
     monthly: 'Mensal',
+    ready: 'Começar',
     weekly: 'Semanal',
     custom: 'Personalizado',
     totalSpent: 'Total Gasto',
@@ -120,5 +158,24 @@ mixin AppLocale {
     transactions: 'Transações',
     expenseCategories: 'Categorias de Despesas',
     incomeCategories: 'Categorias de Rendas',
+    edit: 'Editar',
+    delete: 'Deletar',
+    totalTransactions: 'Total de Transações',
+    categoriesCount: 'Categorias Usadas',
+    mostSpentCategory: 'Categoria mais gasta',
+    mostProfitableCategory: 'Categoria Mais rentável',
+    defaultPeriod: 'Período Padrão',
+    defaultVisibility: 'Visibilidade Padrão',
+    visible: 'Visível',
+    notVisible: 'Esconder',
+    onboardingTransactions:
+        'Mantenha o controle total das suas finanças registrando todas as suas transações. Anote cada entrada e saída de dinheiro, garantindo que nada passe despercebido. Com tudo bem documentado, você terá uma visão clara e organizada das suas finanças.',
+    onboardingCategories:
+        'Classifique suas transações em diferentes categorias, como alimentação, transporte, lazer e mais. Assim, você saberá exatamente onde está gastando mais e poderá identificar oportunidades de economia. Uma boa organização é o primeiro passo para uma gestão financeira eficiente.',
+    onboardinReports:
+        'Acompanhe seus gastos de forma inteligente com nossos relatórios financeiros detalhados. Visualize gráficos e resumos que mostram onde seu dinheiro está sendo utilizado. Com essas informações, você poderá tomar decisões mais informadas e melhorar sua saúde financeira.',
+    onboardingTransactionsTitle: 'Registre suas transações',
+    onboardingCategoriesTitle: 'Organize por categoria',
+    onboardinReportsTitle: 'Relatórios financeiros',
   };
 }

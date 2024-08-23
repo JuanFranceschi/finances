@@ -2,6 +2,7 @@ import 'package:finances/utils/color_to_hex.dart';
 import 'package:finances/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class Category {
   String id;
@@ -40,11 +41,12 @@ class Category {
       ),
       icon: IconData(
         map['icon'] as int,
-        fontFamily: 'MaterialIcons',
+        fontPackage: 'material_symbols_icons',
+        fontFamily: 'MaterialSymbolsOutlined',
       ),
       plannedOutlay: map['plannedOutlay'] as double,
-      transactionType: TransactionType.values
-          .firstWhere((e) => e.toString() == map['transactionType']),
+      transactionType:
+          TransactionType.values.firstWhere((e) => e.toString() == map['transactionType']),
     );
   }
 }

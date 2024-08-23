@@ -1,6 +1,7 @@
 import 'package:finances/services/account_service.dart';
 import 'package:finances/services/category_service.dart';
 import 'package:finances/services/database_controller.dart';
+import 'package:finances/services/preferences_service.dart';
 import 'package:finances/services/transactions_service.dart';
 import 'package:finances/utils/app_utils.dart';
 import 'package:get_it/get_it.dart';
@@ -13,8 +14,9 @@ void setupGetIt() {
 
   getIt.registerSingleton<DatabaseController>(DatabaseController());
   getIt.registerSingleton<AppUtils>(AppUtils());
+  getIt.registerSingleton<PreferencesService>(PreferencesService());
 
-  getIt.registerFactory<TransactionsService>(() => TransactionsService());
-  getIt.registerFactory<CategoryService>(() => CategoryService());
-  getIt.registerFactory<AccountService>(() => AccountService());
+  getIt.registerLazySingleton<TransactionsService>(() => TransactionsService());
+  getIt.registerLazySingleton<CategoryService>(() => CategoryService());
+  getIt.registerLazySingleton<AccountService>(() => AccountService());
 }

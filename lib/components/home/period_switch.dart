@@ -13,7 +13,6 @@ class PeriodSwitchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomSwitchWidget(
       options: {
-        Period.today: AppLocale.today.getString(context),
         Period.weekly: AppLocale.weekly.getString(context),
         Period.monthly: AppLocale.monthly.getString(context),
         Period.custom: AppLocale.custom.getString(context),

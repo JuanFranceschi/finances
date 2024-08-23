@@ -24,18 +24,29 @@ class CustomTabItem extends StatelessWidget {
           height: 75,
           duration: const Duration(milliseconds: 400),
           decoration: BoxDecoration(
-            color: selected
-                ? Theme.of(context).colorScheme.primaryContainer
-                : null,
+            color: selected ? Theme.of(context).colorScheme.primary : null,
             borderRadius: BorderRadius.circular(35),
           ),
+          curve: Curves.easeOutQuart,
           child: Center(
-            child: Icon(
-              icon,
-              size: 40,
-              color: selected
-                  ? Theme.of(context).focusColor
-                  : Theme.of(context).colorScheme.primary,
+            child: Stack(
+              children: [
+                Icon(
+                  icon,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                AnimatedOpacity(
+                  opacity: selected ? 1 : 0,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeOutQuart,
+                  child: Icon(
+                    icon,
+                    size: 40,
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                )
+              ],
             ),
           ),
         ),

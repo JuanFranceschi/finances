@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const themeColor = Color.fromARGB(255, 151, 67, 255);
+const themeColor = Color.fromRGBO(0, 74, 173, 1);
 const errorColor = Color.fromARGB(255, 241, 81, 70);
 
-InputDecorationTheme inputTheme(Color primary, Color tertiary) => InputDecorationTheme(
+InputDecorationTheme inputTheme(Color primary, Color tertiary) =>
+    InputDecorationTheme(
       border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
@@ -60,6 +61,9 @@ ThemeData lightTheme = ThemeData(
     const Color.fromARGB(255, 41, 46, 51),
     const Color.fromARGB(255, 151, 148, 157),
   ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Color.fromARGB(255, 248, 248, 248),
+  ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: themeColor,
@@ -67,6 +71,7 @@ ThemeData lightTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
+      padding: EdgeInsets.zero,
       minimumSize: const Size(50, 50),
       iconColor: const Color.fromARGB(255, 255, 255, 255),
     ),
@@ -89,9 +94,9 @@ ThemeData lightTheme = ThemeData(
 
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  scaffoldBackgroundColor: const Color.fromARGB(255, 37, 41, 48),
+  scaffoldBackgroundColor: const Color.fromARGB(255, 27, 31, 38),
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromARGB(255, 37, 41, 48),
+    backgroundColor: Color.fromARGB(255, 27, 31, 38),
   ),
   textTheme: GoogleFonts.pridiTextTheme(
     TextTheme(
@@ -107,13 +112,16 @@ ThemeData darkTheme = ThemeData(
   focusColor: themeColor,
   shadowColor: const Color.fromARGB(20, 233, 232, 232),
   colorScheme: const ColorScheme.dark(
-    primaryContainer: Color.fromARGB(255, 27, 31, 38),
-    secondaryContainer: Color.fromARGB(255, 47, 51, 58),
-    tertiaryContainer: Color.fromARGB(255, 57, 61, 68),
+    primaryContainer: Color.fromARGB(255, 17, 21, 28),
+    secondaryContainer: Color.fromARGB(255, 37, 41, 48),
+    tertiaryContainer: Color.fromARGB(255, 47, 51, 58),
     primary: Color.fromARGB(255, 254, 254, 254),
     secondary: Color.fromARGB(255, 213, 216, 224),
     tertiary: Color.fromARGB(255, 163, 166, 174),
     shadow: Color.fromARGB(20, 233, 232, 232),
+  ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Color.fromARGB(255, 27, 31, 38),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -121,6 +129,7 @@ ThemeData darkTheme = ThemeData(
       textStyle: const TextStyle(
         color: Color.fromARGB(255, 217, 220, 226),
       ),
+      padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
