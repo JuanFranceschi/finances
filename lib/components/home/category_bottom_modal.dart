@@ -1,6 +1,5 @@
 import 'package:finances/models/category.dart';
 import 'package:finances/services/category_service.dart';
-import 'package:finances/services/transactions_service.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/get_it.dart';
 import 'package:finances/utils/routes.dart';
@@ -11,7 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 class CategoryBottomModal extends StatelessWidget {
   final Category category;
   final Function() onAction;
-  const CategoryBottomModal({super.key, required this.category, required this.onAction});
+  const CategoryBottomModal(
+      {super.key, required this.category, required this.onAction});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,8 @@ class CategoryBottomModal extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                await getIt<CategoryService>().deleteCategory(category, context);
+                await getIt<CategoryService>()
+                    .deleteCategory(category, context);
 
                 if (context.mounted) {
                   Navigator.pop(context);

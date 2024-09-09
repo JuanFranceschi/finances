@@ -53,7 +53,9 @@ mixin AppLocale {
       onboardingTransactionsTitle = 'onboardingTransactionsTitle',
       onboardingCategoriesTitle = 'onboardingCategoriesTitle',
       onboardinReportsTitle = 'onboardingReportsTitle',
-      ready = 'ready';
+      ready = 'ready',
+      reportsNotVisibleDesc = 'reportsNotVisibleDesc',
+      reportsNotVisibleTitle = 'reportsNotVisibleTitle';
 
   static const Map<String, dynamic> en = {
     income: 'Income',
@@ -115,6 +117,9 @@ mixin AppLocale {
     onboardingTransactionsTitle: 'Record Your Transactions',
     onboardingCategoriesTitle: 'Organize by Category',
     onboardinReportsTitle: 'Financial Reports',
+    reportsNotVisibleDesc:
+        'To see the reports, turn visibility On using the button on the top right corner',
+    reportsNotVisibleTitle: 'Visibility is off',
   };
 
   static const Map<String, dynamic> pt = {
@@ -138,7 +143,8 @@ mixin AppLocale {
     toGetStarted: 'Para começar, por favor insira seu nome:',
     yourNameWillHelpUs:
         'Seu nome nos ajudará a personalizar sua experiência e fornecer um serviço melhor.',
-    clickToAdd: 'Clique no botão de adicionar acima para adicionar uma nova transação',
+    clickToAdd:
+        'Clique no botão de adicionar acima para adicionar uma nova transação',
     yesterday: 'Ontem',
     today: 'Hoje',
     newTransaction: 'Nova Transação',
@@ -168,6 +174,9 @@ mixin AppLocale {
     defaultVisibility: 'Visibilidade Padrão',
     visible: 'Visível',
     notVisible: 'Esconder',
+    reportsNotVisibleDesc:
+        'Para ver os relatórios, ative a visibilidade usando o botão no canto superior direito',
+    reportsNotVisibleTitle: 'A visibilidade está desativada',
     onboardingTransactions:
         'Mantenha o controle total das suas finanças registrando todas as suas transações. Anote cada entrada e saída de dinheiro, garantindo que nada passe despercebido. Com tudo bem documentado, você terá uma visão clara e organizada das suas finanças.',
     onboardingCategories:

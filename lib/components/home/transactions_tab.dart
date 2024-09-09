@@ -5,7 +5,6 @@ import 'package:finances/models/transactions.dart';
 import 'package:finances/utils/account_manager.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/enums.dart';
-import 'package:finances/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:provider/provider.dart';
@@ -28,14 +27,16 @@ class _TransactionsTabWidgetState extends State<TransactionsTabWidget> {
   double get totalSpent {
     double sum = 0;
 
-    for (var obj in activeTransactions.where((obj) => obj.type == TransactionType.expenses)) {
+    for (var obj in activeTransactions
+        .where((obj) => obj.type == TransactionType.expenses)) {
       sum += obj.value;
     }
 
     return sum;
   }
 
-  List<Transactions> get activeTransactions => provListenTrue.activeTransactions;
+  List<Transactions> get activeTransactions =>
+      provListenTrue.activeTransactions;
 
   @override
   Widget build(BuildContext context) {

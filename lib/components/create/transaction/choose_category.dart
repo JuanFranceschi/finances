@@ -1,14 +1,10 @@
-import 'package:finances/components/back_header.dart';
-import 'package:finances/components/global/card.dart';
 import 'package:finances/components/global/category_vertical.dart';
 import 'package:finances/models/category.dart';
 import 'package:finances/services/category_service.dart';
-import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/enums.dart';
 import 'package:finances/utils/get_it.dart';
 import 'package:finances/utils/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ChooseCategory extends StatefulWidget {

@@ -46,13 +46,6 @@ class HomeController with ChangeNotifier {
     }).toList();
   }
 
-  List<Transactions> get _customTransactions {
-    return _monthlyTransactions.where((obj) {
-      return obj.dateTime.isAfter(customBegin) &&
-          obj.dateTime.isBefore(customEnd.add(const Duration(days: 1)));
-    }).toList();
-  }
-
   List<Transactions> get activeTransactions {
     switch (period) {
       case Period.weekly:
@@ -65,13 +58,15 @@ class HomeController with ChangeNotifier {
   }
 
   final List<Transactions> _monthlyTransactions = List.empty(growable: true);
+  final List<Transactions> _customTransactions = List.empty(growable: true);
 
   List<Transactions> get totalByCategory {
     List<Transactions> result = List.empty(growable: true);
 
-    for (var transaction
-        in activeTransactions.where((obj) => obj.type == TransactionType.expenses)) {
-      bool filter(Transactions obj) => obj.category.id == transaction.category.id;
+    for (var transaction in activeTransactions
+        .where((obj) => obj.type == TransactionType.expenses)) {
+      bool filter(Transactions obj) =>
+          obj.category.id == transaction.category.id;
       if (result.any(filter)) {
         result.firstWhere(filter).value += transaction.value;
       } else {
@@ -95,8 +90,10 @@ class HomeController with ChangeNotifier {
   List<Transactions> get totalByCategoryIncome {
     List<Transactions> result = List.empty(growable: true);
 
-    for (var transaction in activeTransactions.where((obj) => obj.type == TransactionType.income)) {
-      bool filter(Transactions obj) => obj.category.id == transaction.category.id;
+    for (var transaction in activeTransactions
+        .where((obj) => obj.type == TransactionType.income)) {
+      bool filter(Transactions obj) =>
+          obj.category.id == transaction.category.id;
       if (result.any(filter)) {
         result.firstWhere(filter).value += transaction.value;
       } else {
@@ -125,20 +122,39 @@ class HomeController with ChangeNotifier {
 
     period = newPeriod;
 
+    if (newPeriod == Period.custom) {
+      getTransactions();
+    }
+
     notifyListeners();
   }
 
   getTransactions() {
-    var dates = getIt<AppUtils>().getDateRange(Period.monthly, _today);
+    if (period == Period.custom) {
+      getIt<TransactionsService>()
+          .listTransactionsByTimeRange(customBegin, customEnd)
+          .then(
+        (value) {
+          _customTransactions.clear();
+          _customTransactions.addAll(value);
 
-    getIt<TransactionsService>().listTransactionsByTimeRange(dates[0], dates[1]).then(
-      (value) {
-        _monthlyTransactions.clear();
-        _monthlyTransactions.addAll(value);
+          notifyListeners();
+        },
+      );
+    } else {
+      var dates = getIt<AppUtils>().getDateRange(period, _today);
 
-        notifyListeners();
-      },
-    );
+      getIt<TransactionsService>()
+          .listTransactionsByTimeRange(dates[0], dates[1])
+          .then(
+        (value) {
+          _monthlyTransactions.clear();
+          _monthlyTransactions.addAll(value);
+
+          notifyListeners();
+        },
+      );
+    }
   }
 
   DateTime get _today {
@@ -148,6 +164,9 @@ class HomeController with ChangeNotifier {
   }
 
   String get totalBalance {
-    return Provider.of<AccountManager>(context).account.value.toStringAsFixed(2);
+    return Provider.of<AccountManager>(context)
+        .account
+        .value
+        .toStringAsFixed(2);
   }
 }

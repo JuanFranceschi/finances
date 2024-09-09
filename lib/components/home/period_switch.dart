@@ -36,7 +36,8 @@ class PeriodSwitchWidget extends StatelessWidget {
             );
           });
         } else {
-          Provider.of<HomeController>(context, listen: false).changePeriod(value);
+          Provider.of<HomeController>(context, listen: false)
+              .changePeriod(value);
         }
       },
     );

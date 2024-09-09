@@ -36,24 +36,39 @@ class _ReportsTabWidgetState extends State<ReportsTabWidget> {
         .fold(0.0, (previousValue, element) => previousValue + element.value);
   }
 
-  List<Transactions> get activeTransactions => provListenTrue.activeTransactions;
+  List<Transactions> get activeTransactions =>
+      provListenTrue.activeTransactions;
 
   @override
   Widget build(BuildContext context) {
     if (!_visibility) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             Center(
-              child: Opacity(
-                opacity: .5,
-                child: Icon(
-                  Symbols.visibility_off_rounded,
-                  size: 34,
-                ),
+              child: Icon(
+                Symbols.visibility_off_rounded,
+                size: 34,
+                color: Theme.of(context).colorScheme.tertiary,
               ),
+            ),
+            Text(
+              AppLocale.reportsNotVisibleTitle.getString(context),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.tertiary),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              AppLocale.reportsNotVisibleDesc.getString(context),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .copyWith(color: Theme.of(context).colorScheme.tertiary),
+              textAlign: TextAlign.center,
             )
           ],
         ),
@@ -65,8 +80,9 @@ class _ReportsTabWidgetState extends State<ReportsTabWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GraphicWidget(
-            transactions:
-                activeTransactions.where((obj) => obj.type == TransactionType.expenses).toList(),
+            transactions: activeTransactions
+                .where((obj) => obj.type == TransactionType.expenses)
+                .toList(),
             period: period,
           ),
           const SizedBox(height: 10),

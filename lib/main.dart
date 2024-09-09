@@ -7,7 +7,6 @@ import 'package:finances/pages/create/category.dart';
 import 'package:finances/pages/create/transaction.dart';
 import 'package:finances/services/account_service.dart';
 import 'package:finances/services/database_controller.dart';
-import 'package:finances/services/preferences_service.dart';
 import 'package:finances/utils/account_manager.dart';
 import 'package:finances/utils/app_locale.dart';
 import 'package:finances/utils/enums.dart';
